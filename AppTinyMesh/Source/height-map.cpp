@@ -1,0 +1,310 @@
+#include "height-map.h"
+
+#include <random>
+#include <QImageWriter>
+#include <QImageReader>
+
+// Box2
+//****/
+
+const double Box2::epsilon = 1.0e-5; //!< Epsilon value used to check intersections and some round off errors.
+
+const int Box2::edge[8] =
+{
+  0,1,2,3,
+  0,2,1,3,
+};
+
+const Vector Box2::normal[1] =
+{
+  Vector(0.0,1.0,0.0)
+};
+
+/*!
+\brief Create a box given a center point and the half side length.
+\param c Center.
+\param r Half side length.
+*/
+Box2::Box2(const Vector& c, double r)
+{
+  a = c - Vector(r,r,0.0);
+  b = c + Vector(r,r,0.0);
+}
+
+/*!
+\brief Create a cube centered at the origin and of given half side length.
+
+This is equivalent to:
+\code
+Box box(Vector(0.0),2.0);  // Simplified constructor Box(2.0);
+\endcode
+\param r Half side length.
+*/
+Box2::Box2(double r)
+{
+  a = -Vector(r,r,0.0);
+  b = Vector(r,r,0.0);
+}
+
+/*!
+\brief Create a box given two opposite corners.
+
+Note that this constructor does not check the coordinates of the two vectors.
+Therefore, the coordinates of a should be lower than those of b.
+
+To create the axis aligned bounding box of two vectors a and b in
+the general case, one should use:
+\code
+Box box(Vector::Min(a,b),Vector::Max(a,b));
+\endcode
+\param a,b End vertices.
+*/
+Box2::Box2(const Vector& a, const Vector& b)
+{
+  Box2::a = a;
+  Box2::b = b;
+}
+
+/*!
+\brief Check if vector inside the square
+*/
+bool Box2::Inside(const Vector& v) const {
+    if (a[0]<v[0] && b[0]>v[0] && a[1]<v[1] && b[1]>v[1]){return true;}
+    return false;
+};
+
+bool Box2::Inside(const double& x, const double& y) const {
+    if (a[0]<x && b[0]>x && a[1]<y && b[1]>y){return true;}
+    return false;
+};
+
+/*!
+\brief Check if vector intersect the square
+*/
+bool Box2::Intersect(const Box2& box) const {
+    if (Inside(box.a) | Inside(box.b) |
+        Inside(box.a[0], box.b[1]) | Inside(box.b[0], box.a[1])){
+        return true;
+    }
+     return false;
+};
+
+
+// Grid
+//****/
+
+Grid::Grid(){
+    // Init
+    n = 256;
+    Load_Grid();
+};
+
+Grid::Grid(int set_n){
+    // Init
+    n = set_n;
+    Load_Grid();
+};
+
+void Grid::Load_Grid(){
+    int i;
+    int j;
+    double deltai = abs(a[0]-b[0])/n;
+    double deltaj = abs(a[1]-b[1])/n;
+    for (int index=0; index<(n*n); index++){
+        i = index % n;
+        j = index - (i*n);
+        vGrid[index] = Vector(deltai*i, 0, deltaj*j);
+    }
+    max_height = 0.0;
+};
+
+bool Grid::Inside(int i, int j){
+    if (Index(i,j) < vGrid.size()){return true;}
+    return false;
+};
+
+int Grid::Index(int i, int j){
+    int index = i*n+j;
+    return index;
+}
+
+
+
+// ScalarField
+//***********/
+
+ScalarField::ScalarField(){}
+
+void ScalarField::Save_Image(){
+    // Initialization
+    QString imagePath(QStringLiteral("./AppTinyMesh/Data/Result/scalar_field.png"));
+    QImage image(n, n, QImage::Format_Grayscale8);
+    image.fill(Qt::black);
+
+    // Filling
+    // Note : taille de la grille nxn
+    QRgb color;
+    uint height;
+    int u;
+    int v;
+    float factor = 255 / max_height;
+    for (int index=0; index<n*n; index++){
+        u = index%n;
+        v = index - (u*n);
+        height = vGrid[index][1] * factor;
+        color = qGray(height, height, height);
+        image.setPixel(u, v, color);
+    }
+
+    // Writting
+    QImageWriter writer(imagePath);
+    writer.write(image);
+}
+
+double ScalarField::Value(const Vector& p)
+{
+  return Norm(p) - 1.0;
+}
+
+Vector ScalarField::Gradient(const Vector& p) {
+    double Epsilon = 1e-6;
+    double x = Value(Vector(p[0] + Epsilon, p[1], p[2])) - Value(Vector(p[0] - Epsilon, p[1], p[2]));
+    double y = Value(Vector(p[0], p[1] + Epsilon, p[2])) - Value(Vector(p[0], p[1] - Epsilon, p[2]));
+    double z = Value(Vector(p[0], p[1], p[2] + Epsilon)) - Value(Vector(p[0], p[1], p[2] - Epsilon));
+
+    return Vector(x, y, z) * (0.5 / Epsilon);
+}
+
+Vector ScalarField::Normalize(const Vector & p){
+    return p * (1.0 / Norm(p));
+}
+
+Vector ScalarField::Clamp(const Vector& p){
+    // TODO
+    return p;
+}
+
+double ScalarField::GradientNorm(const Vector& p) const {
+    return Norm(Gradient(p));
+}
+
+Vector ScalarField::Laplacian(const Vector& p) const {
+    return Gradient(Gradient(p));
+}
+
+
+void Smooth(){
+    //TODO
+
+    // kernel = {{1, 2, 1}, {2, 4, 2}, {1, 2, 1}};
+};
+
+void Blur(){
+    //TODO
+
+    // kernel = {{1,1,1}, {1,1,1}, {1,1,1}};
+};
+
+
+
+// HeightField
+//***********/
+
+/*!
+\brief Constructor.
+*/
+HeightField::HeightField(){}
+
+double HeightField::heightTable[16] = {
+    5.0, 5.0, 5.0, 5.0,
+    3.0, 3.0, 3.0, 3.0,
+    0.0, 0.0, 0.0, 0.0,
+    -1.0, -1.0, -1.0, -1.0
+};
+
+/*!
+\brief Compute the height for p(x,y)
+
+source (slide 10) https://perso.liris.cnrs.fr/eric.galin/M2/Landscapes/1-terrain-models.pdf
+*/
+Vector HeightField::Height(const double& x, const double& y){
+    double u = (x - a[0])/(b[0] - a[0]);
+    double v = (y - a[1])/(b[1] - a[1]);
+
+    int nu = int(u*n);
+    int nv = int(v*n);
+
+    u = u - nu*(b[0] - a[0])/n;
+    v = v - nv*(b[1] - a[1])/n;
+
+    double h = 0;
+    if (u+v<1){
+        h = (1-u-v)*vGrid[Index(nu,nv)][1]
+                +u*vGrid[Index(nu+1, nv)][1]
+                +v*vGrid[Index(nu,nv+1)][1];
+    }
+    else{
+        h = (u+v-1)*vGrid[Index(nu+1, nv+1)][1]
+           +(1-u)*vGrid[Index(nu+1, nv)][1]
+           +(1-v)*vGrid[Index(nu, nv+1)][1];
+    }
+    Vector point {x, y, h};
+    return point;
+}
+
+
+void HeightField::LoadHeightMap(std::string filename){
+    // Read the image
+    QString FileName = QString::fromStdString(filename);
+    QImage image(n, n, QImage::Format_Grayscale8);
+    QImageReader reader;
+    reader.setFileName(FileName);
+    reader.read(&image);
+
+    // Load content in vGrid
+    int u;
+    int v;
+    for (int index=0; index<n*n; index++){
+        u = index%n;
+        v = index - (u*n);
+        QColor color(image.pixelColor(u,v));
+        color.toHsv();
+        int height = color.value();
+        vGrid[index][1] = height;
+    }
+}
+
+
+/*!
+\brief Compute the slope of the field.
+\param p vector point
+*/
+Vector HeightField::Slope(const Vector& p){
+    return Abs(Gradient(p));
+}
+
+/*!
+\brief Compute the slope of the field.
+\param i, j Grid point coord
+*/
+Vector HeightField::AverageSlope(int i, int j){
+    Vector p = Height( (double) i+1, (double) j);
+    Vector slope = Slope(p);
+    p = Height( (double) i+1, (double) j+1);
+    slope += Slope(p);
+    p = Height( (double) i, (double) j+1);
+    slope += Slope(p);
+    p = Height( (double) i-1, (double) j+1);
+    slope += Slope(p);
+    p = Height( (double) i-1, (double) j);
+    slope += Slope(p);
+    p = Height( (double) i-1, (double) j-1);
+    slope += Slope(p);
+    p = Height( (double) i, (double) j-1);
+    slope += Slope(p);
+    p = Height( (double) i+1, (double) j-1);
+    slope += Slope(p);
+
+    slope /= 8;
+    return slope;
+}
