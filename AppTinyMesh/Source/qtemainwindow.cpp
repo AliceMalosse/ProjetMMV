@@ -32,6 +32,7 @@ void MainWindow::CreateActions()
 	// Buttons
     connect(uiw->boxMesh, SIGNAL(clicked()), this, SLOT(BoxMeshExample()));
     connect(uiw->sphereImplicit, SIGNAL(clicked()), this, SLOT(SphereImplicitExample()));
+    connect(uiw->box2Mesh, SIGNAL(clicked()), this, SLOT(Box2Mesh()));
     connect(uiw->fieldsImplicit, SIGNAL(clicked()), this, SLOT(ImplicitField()));
     connect(uiw->resetcameraButton, SIGNAL(clicked()), this, SLOT(ResetCamera()));
     connect(uiw->wireframe, SIGNAL(clicked()), this, SLOT(UpdateMaterial()));
@@ -82,12 +83,10 @@ void MainWindow::SphereImplicitExample()
   UpdateGeometry();
 }
 
-
 /*
-Function building a HeightField
-TODO
+Function building a Box2
 */
-void MainWindow::ImplicitField()
+void MainWindow::Box2Mesh()
 {
     // Test Box2
     Mesh boxMesh = Mesh(Box2(1.0));
@@ -95,12 +94,28 @@ void MainWindow::ImplicitField()
     std::vector<Color> cols;
     cols.resize(boxMesh.Vertexes());
     for (size_t i = 0; i < cols.size(); i++)
-        cols[i] = Color(double(i) / 6.0, fmod(double(i) * 39.478378, 1.0), 0.0);
+        cols[i] = Color(0.8, 0.8, 0.8);
 
     meshColor = MeshColor(boxMesh, cols, boxMesh.VertexIndexes());
     UpdateGeometry();
+}
 
-//  // Surface implicite
+void MainWindow::ImplicitField()
+{
+    // Test Grid
+    Mesh gridMesh = Mesh(Grid(5, 2.0));
+
+    std::vector<Color> cols;
+    cols.resize(gridMesh.Vertexes());
+    for (size_t i = 0; i < cols.size(); i++)
+        cols[i] = Color(double(i) / 6.0, fmod(double(i) * 39.478378, 1.0), 0.0);
+
+    meshColor = MeshColor(gridMesh, cols, gridMesh.VertexIndexes());
+    UpdateGeometry();
+
+    //Test ScalarField
+
+//  // Test HeightField
 //  HeightField implicit;
 //  implicit.LoadHeightMap("AppTinyMesh/Data/Grand_Mountain_HeightMap/HeightMap256.png");
 //  implicit.Save_Image();
@@ -118,12 +133,12 @@ void MainWindow::ImplicitField()
 void MainWindow::UpdateGeometry()
 {
 	meshWidget->ClearAll();
-	meshWidget->AddMesh("BoxMesh", meshColor);
+    meshWidget->AddMesh("BoxMesh", meshColor);
 
     uiw->lineEdit->setText(QString::number(meshColor.Vertexes()));
     uiw->lineEdit_2->setText(QString::number(meshColor.Triangles()));
 
-	UpdateMaterial();
+    UpdateMaterial();
 }
 
 void MainWindow::UpdateMaterial()

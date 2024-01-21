@@ -30,6 +30,7 @@ public slots:
   void editingSceneRight(const Ray&);
   void BoxMeshExample();
   void SphereImplicitExample();
+  void Box2Mesh();
   void ImplicitField();
   void ResetCamera();
   void UpdateMaterial();

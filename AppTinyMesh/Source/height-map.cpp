@@ -17,7 +17,7 @@ const int Box2::edge[8] =
 
 const Vector Box2::normal[1] =
 {
-  Vector(0.0,1.0,0.0)
+  Vector(0.0,0.0,1.0)
 };
 
 /*!
@@ -96,12 +96,17 @@ bool Box2::Intersect(const Box2& box) const {
 Grid::Grid(){
     // Init
     n = 256;
+    double r = 1.0;
+    a = -Vector(r,r,0.0);
+    b = Vector(r,r,0.0);
     Load_Grid();
 };
 
-Grid::Grid(int set_n){
+Grid::Grid(int set_n, double r){
     // Init
     n = set_n;
+    a = -Vector(r,r,0.0);
+    b = Vector(r,r,0.0);
     Load_Grid();
 };
 
@@ -110,10 +115,11 @@ void Grid::Load_Grid(){
     int j;
     double deltai = abs(a[0]-b[0])/n;
     double deltaj = abs(a[1]-b[1])/n;
+    vGrid.resize(n*n);
     for (int index=0; index<(n*n); index++){
-        i = index % n;
-        j = index - (i*n);
-        vGrid[index] = Vector(deltai*i, 0, deltaj*j);
+        i = index / n;
+        j = index % n;
+        vGrid[index] = Vector(a[0]+deltai*i, a[1]+deltaj*j, 0.0);
     }
     max_height = 0.0;
 };
@@ -123,12 +129,22 @@ bool Grid::Inside(int i, int j){
     return false;
 };
 
-int Grid::Index(int i, int j){
+int Grid::Index(int i, int j) const{
     int index = i*n+j;
     return index;
 }
 
+int Grid::GetN() const{
+    return n;
+}
 
+Vector Grid::Value (int i, int j) const{
+    return vGrid[Index(i,j)];
+}
+
+Vector Grid::Value(int index) const{
+    return vGrid[index];
+}
 
 // ScalarField
 //***********/

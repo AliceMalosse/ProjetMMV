@@ -79,12 +79,15 @@ protected :
     float max_height;
 public:
     Grid();
-    Grid(int);
+    Grid(int, double);
 
     void Load_Grid();
 
     bool Inside(int, int);
-    int Index(int, int);
+    int Index(int, int) const;
+    int GetN() const;
+    Vector Value(int, int) const;
+    Vector Value(int) const;
 };
 
 

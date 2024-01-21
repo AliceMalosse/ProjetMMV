@@ -122,6 +122,7 @@ public:
   // Constructors from core classes
   explicit Mesh(const Box&);
   explicit Mesh(const Box2&);
+  explicit Mesh(const Grid&);
 
   void Load(const QString&);
   void SaveObj(const QString&, const QString&) const;

@@ -136,13 +136,26 @@ p, li { white-space: pre-wrap; }
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>80</y>
+         <y>120</y>
          <width>101</width>
          <height>29</height>
         </rect>
        </property>
        <property name="text">
         <string>Fields Implicit</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="box2Mesh">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>80</y>
+         <width>101</width>
+         <height>29</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Box2 Mesh</string>
        </property>
       </widget>
      </widget>
