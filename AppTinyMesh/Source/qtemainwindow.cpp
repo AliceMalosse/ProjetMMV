@@ -33,7 +33,9 @@ void MainWindow::CreateActions()
     connect(uiw->boxMesh, SIGNAL(clicked()), this, SLOT(BoxMeshExample()));
     connect(uiw->sphereImplicit, SIGNAL(clicked()), this, SLOT(SphereImplicitExample()));
     connect(uiw->box2Mesh, SIGNAL(clicked()), this, SLOT(Box2Mesh()));
-    connect(uiw->fieldsImplicit, SIGNAL(clicked()), this, SLOT(ImplicitField()));
+    connect(uiw->gridMesh, SIGNAL(clicked()), this, SLOT(GridMesh()));
+    connect(uiw->scalarField, SIGNAL(clicked()), this, SLOT(ScalarField()));
+    connect(uiw->heightField, SIGNAL(clicked()), this, SLOT(HeightField()));
     connect(uiw->resetcameraButton, SIGNAL(clicked()), this, SLOT(ResetCamera()));
     connect(uiw->wireframe, SIGNAL(clicked()), this, SLOT(UpdateMaterial()));
     connect(uiw->radioShadingButton_1, SIGNAL(clicked()), this, SLOT(UpdateMaterial()));
@@ -100,7 +102,7 @@ void MainWindow::Box2Mesh()
     UpdateGeometry();
 }
 
-void MainWindow::ImplicitField()
+void MainWindow::GridMesh()
 {
     // Test Grid
     Mesh gridMesh = Mesh(Grid(5, 2.0));
@@ -112,9 +114,16 @@ void MainWindow::ImplicitField()
 
     meshColor = MeshColor(gridMesh, cols, gridMesh.VertexIndexes());
     UpdateGeometry();
+}
 
+void MainWindow::ScalarField()
+{
     //Test ScalarField
+}
 
+
+void MainWindow::HeightField()
+{
 //  // Test HeightField
 //  HeightField implicit;
 //  implicit.LoadHeightMap("AppTinyMesh/Data/Grand_Mountain_HeightMap/HeightMap256.png");
