@@ -44,6 +44,7 @@ public:
     QPushButton *boxMesh;
     QPushButton *resetcameraButton;
     QPushButton *sphereImplicit;
+    QPushButton *box2Mesh;
     QPushButton *fieldsImplicit;
     QWidget *widget_GL;
     QGroupBox *Parameters_groupBox;
@@ -112,9 +113,13 @@ public:
         sphereImplicit->setObjectName(QString::fromUtf8("sphereImplicit"));
         sphereImplicit->setGeometry(QRect(20, 50, 101, 23));
         sphereImplicit->setCheckable(false);
+        box2Mesh = new QPushButton(Objects_groupBox);
+        box2Mesh->setObjectName(QString::fromUtf8("box2Mesh"));
+        box2Mesh->setGeometry(QRect(20, 80, 101, 23));
+        box2Mesh->setCheckable(false);
         fieldsImplicit = new QPushButton(Objects_groupBox);
         fieldsImplicit->setObjectName(QString::fromUtf8("fieldsImplicit"));
-        fieldsImplicit->setGeometry(QRect(20, 80, 101, 23));
+        fieldsImplicit->setGeometry(QRect(20, 110, 101, 23));
         fieldsImplicit->setCheckable(false);
 
         hboxLayout->addWidget(Objects_groupBox);
@@ -223,6 +228,15 @@ public:
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#aa00ff;\">Create Eurographics 1996 Bear</span></p></body></html>", nullptr));
 #endif // QT_CONFIG(tooltip)
         sphereImplicit->setText(QCoreApplication::translate("Assets", "Sphere Implicit", nullptr));
+#if QT_CONFIG(tooltip)
+        box2Mesh->setToolTip(QCoreApplication::translate("Assets", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#5500ff;\">Callback #01</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#aa00ff;\">Create Eurographics 1996 Bear</span></p></body></html>", nullptr));
+#endif // QT_CONFIG(tooltip)
+        box2Mesh->setText(QCoreApplication::translate("Assets", "Box2 Mesh", nullptr));
 #if QT_CONFIG(tooltip)
         fieldsImplicit->setToolTip(QCoreApplication::translate("Assets", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
