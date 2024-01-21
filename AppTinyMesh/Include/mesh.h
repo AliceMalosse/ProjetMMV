@@ -123,6 +123,7 @@ public:
   explicit Mesh(const Box&);
   explicit Mesh(const Box2&);
   explicit Mesh(const Grid&);
+  explicit Mesh(const ScalarField&);
 
   void Load(const QString&);
   void SaveObj(const QString&, const QString&) const;

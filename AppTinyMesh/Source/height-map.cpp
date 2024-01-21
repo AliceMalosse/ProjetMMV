@@ -149,7 +149,20 @@ Vector Grid::Value(int index) const{
 // ScalarField
 //***********/
 
-ScalarField::ScalarField(){}
+ScalarField::ScalarField(){
+    n = 256;
+    double r = 1.0;
+    a = -Vector(r,r,0.0);
+    b = Vector(r,r,0.0);
+    Load_Grid();
+}
+
+ScalarField::ScalarField(int set_n, double r){
+    n = set_n;
+    a = -Vector(r,r,0.0);
+    b = Vector(r,r,0.0);
+    Load_Grid();
+}
 
 void ScalarField::Save_Image(){
     // Initialization
@@ -177,34 +190,34 @@ void ScalarField::Save_Image(){
     writer.write(image);
 }
 
-double ScalarField::Value(const Vector& p)
+double ScalarField::ScalarValue(Vector p)
 {
   return Norm(p) - 1.0;
 }
 
-Vector ScalarField::Gradient(const Vector& p) {
+Vector ScalarField::Gradient(Vector p) {
     double Epsilon = 1e-6;
-    double x = Value(Vector(p[0] + Epsilon, p[1], p[2])) - Value(Vector(p[0] - Epsilon, p[1], p[2]));
-    double y = Value(Vector(p[0], p[1] + Epsilon, p[2])) - Value(Vector(p[0], p[1] - Epsilon, p[2]));
-    double z = Value(Vector(p[0], p[1], p[2] + Epsilon)) - Value(Vector(p[0], p[1], p[2] - Epsilon));
+    double x = ScalarValue(Vector(p[0] + Epsilon, p[1], p[2])) - ScalarValue(Vector(p[0] - Epsilon, p[1], p[2]));
+    double y = ScalarValue(Vector(p[0], p[1] + Epsilon, p[2])) - ScalarValue(Vector(p[0], p[1] - Epsilon, p[2]));
+    double z = ScalarValue(Vector(p[0], p[1], p[2] + Epsilon)) - ScalarValue(Vector(p[0], p[1], p[2] - Epsilon));
 
     return Vector(x, y, z) * (0.5 / Epsilon);
 }
 
-Vector ScalarField::Normalize(const Vector & p){
+Vector ScalarField::Normalize(Vector p){
     return p * (1.0 / Norm(p));
 }
 
-Vector ScalarField::Clamp(const Vector& p){
+Vector ScalarField::Clamp(Vector p){
     // TODO
     return p;
 }
 
-double ScalarField::GradientNorm(const Vector& p) const {
+double ScalarField::GradientNorm(Vector p) {
     return Norm(Gradient(p));
 }
 
-Vector ScalarField::Laplacian(const Vector& p) const {
+Vector ScalarField::Laplacian(Vector p) {
     return Gradient(Gradient(p));
 }
 

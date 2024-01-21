@@ -34,8 +34,8 @@ void MainWindow::CreateActions()
     connect(uiw->sphereImplicit, SIGNAL(clicked()), this, SLOT(SphereImplicitExample()));
     connect(uiw->box2Mesh, SIGNAL(clicked()), this, SLOT(Box2Mesh()));
     connect(uiw->gridMesh, SIGNAL(clicked()), this, SLOT(GridMesh()));
-    connect(uiw->scalarField, SIGNAL(clicked()), this, SLOT(ScalarField()));
-    connect(uiw->heightField, SIGNAL(clicked()), this, SLOT(HeightField()));
+    connect(uiw->scalarField, SIGNAL(clicked()), this, SLOT(ScalarFieldMesh()));
+    connect(uiw->heightField, SIGNAL(clicked()), this, SLOT(HeightFieldMesh()));
     connect(uiw->resetcameraButton, SIGNAL(clicked()), this, SLOT(ResetCamera()));
     connect(uiw->wireframe, SIGNAL(clicked()), this, SLOT(UpdateMaterial()));
     connect(uiw->radioShadingButton_1, SIGNAL(clicked()), this, SLOT(UpdateMaterial()));
@@ -116,13 +116,22 @@ void MainWindow::GridMesh()
     UpdateGeometry();
 }
 
-void MainWindow::ScalarField()
+void MainWindow::ScalarFieldMesh()
 {
     //Test ScalarField
+    Mesh mesh = Mesh(ScalarField(5, 2.0));
+
+    std::vector<Color> cols;
+    cols.resize(mesh.Vertexes());
+    for (size_t i = 0; i < cols.size(); i++)
+        cols[i] = Color(double(i) / 6.0, fmod(double(i) * 39.478378, 1.0), 0.0);
+
+    meshColor = MeshColor(mesh, cols, mesh.VertexIndexes());
+    UpdateGeometry();
 }
 
 
-void MainWindow::HeightField()
+void MainWindow::HeightFieldMesh()
 {
 //  // Test HeightField
 //  HeightField implicit;

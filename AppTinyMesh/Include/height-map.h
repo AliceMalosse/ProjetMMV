@@ -92,21 +92,21 @@ public:
 
 
 // Class ScalarFields, from Grid
-class ScalarField : protected Grid
+class ScalarField : public Grid
 {
 protected:
-    std::vector<Vector> scalar;
 public:
     ScalarField();
+    ScalarField(int, double);
 
     void Save_Image();
 
-    static double Value(const Vector& p);
-    static Vector Gradient(const Vector&);
-    static Vector Normalize(const Vector&);
-    static Vector Clamp(const Vector&); // TODO
-    double GradientNorm(const Vector&) const;
-    Vector Laplacian(const Vector&) const;
+    double ScalarValue(Vector);
+    Vector Gradient(Vector);
+    Vector Normalize(Vector);
+    Vector Clamp(Vector); // TODO
+    double GradientNorm(Vector);
+    Vector Laplacian(Vector);
 
     void Smooth() const; //TODO
     void Blur() const; //TODO
@@ -127,7 +127,7 @@ public:
     Vector Height(const double&, const double&);
 
     // Slope Fucntion
-    static Vector Slope(const Vector&);
+    Vector Slope(const Vector&);
     // Average slope in 8 directions
     Vector AverageSlope(int, int);
 };

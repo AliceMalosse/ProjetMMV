@@ -32,8 +32,8 @@ public slots:
   void SphereImplicitExample();
   void Box2Mesh();
   void GridMesh();
-  void ScalarField();
-  void HeightField();
+  void ScalarFieldMesh();
+  void HeightFieldMesh();
   void ResetCamera();
   void UpdateMaterial();
 };
