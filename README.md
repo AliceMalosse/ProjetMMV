@@ -14,3 +14,6 @@ Finally, open the Visual Studio solution files with Visual Studio 2022 Community
 
 ### Résolution d'une erreur de compilation
 A cause d'une erreur inattendue de Window, j'ai du faire quelques ajustement pour pourvoir compiler le projet fourni. J'ai commenter les lignes du fichier QtCreatorProject.pro qui permettaient de copier le dossier de Shader dans le dossier de build, et ai fait la copie manuellement. Pour des raisons que j'ignore, Window générait une erreur lors de l'appel d'une des fonctions.
+
+### Etat du TP
+A moment du rendu, je suis en train de corriger la fonction Load_Image() de la classe ScalarField. Il est apparue que les couleurs de pixel reccupéré par la fonction sont toutes identiques (et incorrectes). Après vérification, cela pourrait venir du fait que le fichier utilisé n'est pas trouvé par le lecteur d'image bienque ce dernier ne renvoie aucune erreur.
