@@ -99,6 +99,7 @@ public:
     ScalarField();
     ScalarField(int, double);
 
+    void Load_Image(std::string);
     void Save_Image();
 
     double ScalarValue(Vector);
@@ -121,8 +122,8 @@ protected:
 
 public:
     HeightField();
-    // Build the height map
-    void LoadHeightMap(std::string);
+    HeightField(int, double);
+
     // Compute the height for x, y coordinates
     Vector Height(const double&, const double&);
 

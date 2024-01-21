@@ -14,11 +14,3 @@ Finally, open the Visual Studio solution files with Visual Studio 2022 Community
 
 ### Résolution d'une erreur de compilation
 A cause d'une erreur inattendue de Window, j'ai du faire quelques ajustement pour pourvoir compiler le projet fourni. J'ai commenter les lignes du fichier QtCreatorProject.pro qui permettaient de copier le dossier de Shader dans le dossier de build, et ai fait la copie manuellement. Pour des raisons que j'ignore, Window générait une erreur lors de l'appel d'une des fonctions.
-
-## Ce que j'ai fait
-
-### Partie 1 : HeightFields 
-L'objet HeightFields hérite de l'objet AnalyticScalarField et a été programmée dans les même fichiers implicits.cpp et implicits.h.
-
-### Partie 2 : Drainage / Vegetation / Route
-

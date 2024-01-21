@@ -164,22 +164,57 @@ ScalarField::ScalarField(int set_n, double r){
     Load_Grid();
 }
 
+// note : la fonction compile sans erreur mais ne donne pas de bon resultats
+    //la reccuperation des couleurs dans l'image n'est pas la bonne
+    //A RE-TRAVAILLER !
+void ScalarField::Load_Image(std::string filename){
+    std::cout<<"Loading "<<filename<<" ..."<<std::endl;
+    // Read the image
+    QString FileName = QString::fromStdString(filename);
+    QImage image(n, n, QImage::Format_RGB32);
+    QImageReader reader;
+    reader.setFileName(FileName);
+    reader.read(&image);
+
+    // Load content in vGrid
+    int u;
+    int v;
+    for (int index=0; index<n*n; index++){
+        u = index/n;
+        v = index%n;
+        QColor color(image.pixelColor(u,v));
+        // Alpha : 255
+        // RGB : -1 0 205
+        // HSV : 205 205 205
+        //color.toHsv();
+        float height = color.lightnessF();
+        if (height!=0){std::cout<<height<<std::endl;}
+        vGrid[index][2] = height;
+        //std::cout<<vGrid[index]<<std::endl;
+
+        //D'apres Gimp : vmax ~=30 et vmin = 0
+
+        //maj de la hauteur max
+        if (height>max_height){max_height = height;}    }
+    std::cout<<"Load success"<<std::endl;
+}
+
 void ScalarField::Save_Image(){
+    std::cout<<"Saving scalar_field.png ..."<<std::endl;
     // Initialization
     QString imagePath(QStringLiteral("./AppTinyMesh/Data/Result/scalar_field.png"));
     QImage image(n, n, QImage::Format_Grayscale8);
     image.fill(Qt::black);
 
     // Filling
-    // Note : taille de la grille nxn
     QRgb color;
     uint height;
     int u;
     int v;
     float factor = 255 / max_height;
     for (int index=0; index<n*n; index++){
-        u = index%n;
-        v = index - (u*n);
+        u = index/n;
+        v = index%n;
         height = vGrid[index][1] * factor;
         color = qGray(height, height, height);
         image.setPixel(u, v, color);
@@ -188,6 +223,7 @@ void ScalarField::Save_Image(){
     // Writting
     QImageWriter writer(imagePath);
     writer.write(image);
+    std::cout<<"Save success"<<std::endl;
 }
 
 double ScalarField::ScalarValue(Vector p)
@@ -242,7 +278,20 @@ void Blur(){
 /*!
 \brief Constructor.
 */
-HeightField::HeightField(){}
+HeightField::HeightField(){
+    n = 256;
+    double r = 1.0;
+    a = -Vector(r,r,0.0);
+    b = Vector(r,r,0.0);
+    Load_Grid();
+}
+
+HeightField::HeightField(int set_n, double r){
+    n = set_n;
+    a = -Vector(r,r,0.0);
+    b = Vector(r,r,0.0);
+    Load_Grid();
+}
 
 double HeightField::heightTable[16] = {
     5.0, 5.0, 5.0, 5.0,
@@ -280,29 +329,6 @@ Vector HeightField::Height(const double& x, const double& y){
     Vector point {x, y, h};
     return point;
 }
-
-
-void HeightField::LoadHeightMap(std::string filename){
-    // Read the image
-    QString FileName = QString::fromStdString(filename);
-    QImage image(n, n, QImage::Format_Grayscale8);
-    QImageReader reader;
-    reader.setFileName(FileName);
-    reader.read(&image);
-
-    // Load content in vGrid
-    int u;
-    int v;
-    for (int index=0; index<n*n; index++){
-        u = index%n;
-        v = index - (u*n);
-        QColor color(image.pixelColor(u,v));
-        color.toHsv();
-        int height = color.value();
-        vGrid[index][1] = height;
-    }
-}
-
 
 /*!
 \brief Compute the slope of the field.

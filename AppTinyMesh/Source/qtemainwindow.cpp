@@ -119,7 +119,14 @@ void MainWindow::GridMesh()
 void MainWindow::ScalarFieldMesh()
 {
     //Test ScalarField
-    Mesh mesh = Mesh(ScalarField(5, 2.0));
+    //Mesh mesh = Mesh(ScalarField(5, 2.0));
+
+    //Test Load_Image
+    ScalarField field = ScalarField(256, 10);
+    //Note : lien inacessible ... (erreur de syntaxe ? \ ou /) A CORRIGER
+    field.Load_Image("./AppTinyMesh/Data/Grand_Mountain_HeightMap/HeightMap256.png");
+    field.Save_Image();
+    Mesh mesh = Mesh(field);
 
     std::vector<Color> cols;
     cols.resize(mesh.Vertexes());
@@ -133,19 +140,16 @@ void MainWindow::ScalarFieldMesh()
 
 void MainWindow::HeightFieldMesh()
 {
-//  // Test HeightField
-//  HeightField implicit;
-//  implicit.LoadHeightMap("AppTinyMesh/Data/Grand_Mountain_HeightMap/HeightMap256.png");
-//  implicit.Save_Image();
-//  Mesh implicitMesh;
+  // Test HeightField
+  Mesh mesh(HeightField(5, 2.0));
 
-//  std::vector<Color> cols;
-//  cols.resize(implicitMesh.Vertexes());
-//  for (size_t i = 0; i < cols.size(); i++)
-//    cols[i] = Color(0.8, 0.8, 0.8);
+  std::vector<Color> cols;
+  cols.resize(mesh.Vertexes());
+  for (size_t i = 0; i < cols.size(); i++)
+    cols[i] = Color(0.8, 0.8, 0.8);
 
-//  meshColor = MeshColor(implicitMesh, cols, implicitMesh.VertexIndexes());
-//  UpdateGeometry();
+  meshColor = MeshColor(mesh, cols, mesh.VertexIndexes());
+  UpdateGeometry();
 }
 
 void MainWindow::UpdateGeometry()

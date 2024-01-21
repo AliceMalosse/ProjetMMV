@@ -283,6 +283,35 @@ Mesh::Mesh(const ScalarField& field)
     }
 }
 
+Mesh::Mesh(const HeightField& field){
+    int n = field.GetN();
+
+    // Vertices
+    int n_vertice = n*n;
+    vertices.resize(n_vertice);
+    normals.resize(n_vertice);
+
+    for (int i = 0; i < n_vertice; i++)
+    {
+      vertices[i] = field.Value(i);
+      normals.push_back(Vector(0.0, -1.0, 0.0));
+    }
+
+    // Reserve space for the triangle array
+    int n_triangle = (n-1)*(n-1)*2;
+    varray.reserve(n_triangle * 3);
+    narray.reserve(n_triangle * 3);
+
+    int n_square = (n-1)*(n-1);
+    int i = 0;
+    for (int id=0; id<n_square; id++){
+        if ((id%(n-1) == 0) && (id != 0)){i += 1;}
+        AddTriangle(i, i+1, i+n, id);
+        AddTriangle(i+1, i+n, i+n+1, id);
+        i++;
+    }
+}
+
 /*!
 \brief Scale the mesh.
 \param s Scaling factor.
