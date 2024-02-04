@@ -2,6 +2,8 @@
 
 #include <vector>
 #include <iostream>
+#include <QString>
+#include <QFile>
 
 #include "mathematics.h"
 
@@ -95,19 +97,22 @@ public:
 class ScalarField : public Grid
 {
 protected:
+    std::vector<double> GradField;
+    std::vector<Vector> LaplacianField;
 public:
     ScalarField();
     ScalarField(int, double);
 
     void Load_Image(std::string);
-    void Save_Image();
+    void Load_Image(QString);
+    void Save_Image(std::filesystem::path);
 
     double ScalarValue(Vector);
     Vector Gradient(Vector);
     Vector Normalize(Vector);
-    Vector Clamp(Vector); // TODO
-    double GradientNorm(Vector);
-    Vector Laplacian(Vector);
+    Vector Clamp(Vector, double, double);
+    void GradientNorm();
+    void Laplacian();
 
     void Smooth() const; //TODO
     void Blur() const; //TODO
@@ -118,17 +123,27 @@ public:
 class HeightField : public ScalarField
 {
 protected:
-    static double heightTable[16];
-
 public:
     HeightField();
     HeightField(int, double);
 
+    // Compute vertex and normal for mesh
+    Vector Vertex(int, int); //TODO
+    Vector Normal(int, int); //TODO
+
+    // Gen relief image using light direction
+    void Shade(std::filesystem::path); //TODO
+    // Export OBJ
+    void Export(); //TODO
+
     // Compute the height for x, y coordinates
     Vector Height(const double&, const double&);
-
     // Slope Fucntion
     Vector Slope(const Vector&);
     // Average slope in 8 directions
     Vector AverageSlope(int, int);
+
+    void StreamArea(); //TODO
+    void StreamPower(); //TODO
+    void StreamSlope(); //TODO
 };

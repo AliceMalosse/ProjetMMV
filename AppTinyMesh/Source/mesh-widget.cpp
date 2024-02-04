@@ -120,20 +120,21 @@ MeshWidget::MeshGL::MeshGL(const MeshColor& mesh, const Vector& fr) : MeshGL()
     std::vector<int> vertexIndexes = mesh.VertexIndexes();
     std::vector<int> normalIndexes = mesh.NormalIndexes();
     std::vector<int> colorIndexes = mesh.ColorIndexes();
-    std::cout<<vertexIndexes.size()<<std::endl;
-    std::cout<<normalIndexes.size()<<std::endl;
     assert(vertexIndexes.size() == normalIndexes.size());
 
     int nbVertex = int(vertexIndexes.size());
+    //std::cout<<nbVertex<<std::endl;
     int singleBufferSize = nbVertex * 3;
     float* vertices = new float[singleBufferSize];
     float* normals = new float[singleBufferSize];
     float* colors = new float[singleBufferSize];
     for (int i = 0; i < nbVertex; i++)
     {
+        //std::cout<<"Index = "<<i<<std::endl;
         int indexVertex = vertexIndexes[i];
         int indexNormal = normalIndexes[i];
         int indexColor = colorIndexes[i];
+        //std::cout<<"Vertex = "<<indexVertex<<"\n"<<std::endl;
 
         Vector vertex = mesh.Vertex(indexVertex);
         vertices[i * 3 + 0] = float(vertex[0]);
@@ -150,6 +151,7 @@ MeshWidget::MeshGL::MeshGL(const MeshColor& mesh, const Vector& fr) : MeshGL()
         colors[i * 3 + 1] = float(color[1]);
         colors[i * 3 + 2] = float(color[2]);
     }
+
     // Indices are now sorted
     int* indices = new int[nbVertex];
     for (int i = 0; i < nbVertex; i++)

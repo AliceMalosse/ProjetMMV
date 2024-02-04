@@ -3,6 +3,8 @@
 #include <random>
 #include <QImageWriter>
 #include <QImageReader>
+#include <QString>
+#include <QFile>
 
 // Box2
 //****/
@@ -115,10 +117,10 @@ void Grid::Load_Grid(){
     int j;
     double deltai = abs(a[0]-b[0])/n;
     double deltaj = abs(a[1]-b[1])/n;
-    vGrid.resize(n*n);
-    for (int index=0; index<(n*n); index++){
-        i = index / n;
-        j = index % n;
+    vGrid.resize((n+1)*(n+1));
+    for (int index=0; index<((n+1)*(n+1)); index++){
+        i = index / (n+1);
+        j = index % (n+1);
         vGrid[index] = Vector(a[0]+deltai*i, a[1]+deltaj*j, 0.0);
     }
     max_height = 0.0;
@@ -165,64 +167,61 @@ ScalarField::ScalarField(int set_n, double r){
 }
 
 // note : la fonction compile sans erreur mais ne donne pas de bon resultats
-    //la reccuperation des couleurs dans l'image n'est pas la bonne
-    //A RE-TRAVAILLER !
-void ScalarField::Load_Image(std::string filename){
-    std::cout<<"Loading "<<filename<<" ..."<<std::endl;
-    // Read the image
-    QString FileName = QString::fromStdString(filename);
-    QImage image(n, n, QImage::Format_RGB32);
-    QImageReader reader;
-    reader.setFileName(FileName);
-    reader.read(&image);
 
+void ScalarField::Load_Image(QString filename){
+    // Init
+    QImage image;
+    // Load image
+    image.load(filename);
     // Load content in vGrid
     int u;
     int v;
-    for (int index=0; index<n*n; index++){
-        u = index/n;
-        v = index%n;
-        QColor color(image.pixelColor(u,v));
-        // Alpha : 255
-        // RGB : -1 0 205
-        // HSV : 205 205 205
-        //color.toHsv();
-        float height = color.lightnessF();
-        if (height!=0){std::cout<<height<<std::endl;}
+    double factor = abs(a[0] - b[0]);
+    for (int index=0; index<(n+1)*(n+1); index++){
+        u = index/(n+1);
+        v = index%(n+1);
+        QColor color;
+        if (u!=(n+1) || v!=(n+1)){color = QColor(image.pixelColor(u,v));}
+        else {color = QColor(image.pixelColor(u-1,v-1));}
+        color.toHsv();
+        float height = color.value()*factor/255;
+
         vGrid[index][2] = height;
-        //std::cout<<vGrid[index]<<std::endl;
 
-        //D'apres Gimp : vmax ~=30 et vmin = 0
-
-        //maj de la hauteur max
-        if (height>max_height){max_height = height;}    }
+        if (height>max_height){max_height = height;}
+    }
     std::cout<<"Load success"<<std::endl;
+    std::cout<<"Higher point : "<<max_height<<std::endl;
 }
 
-void ScalarField::Save_Image(){
+
+void ScalarField::Load_Image(std::string filename){
+    QString FileName = QString::fromStdString(filename);
+    Load_Image(FileName);
+
+}
+
+void ScalarField::Save_Image(std::filesystem::path path)
+{
     std::cout<<"Saving scalar_field.png ..."<<std::endl;
     // Initialization
-    QString imagePath(QStringLiteral("./AppTinyMesh/Data/Result/scalar_field.png"));
-    QImage image(n, n, QImage::Format_Grayscale8);
+    QFile file(path);
+    QImage image(n+1, n+1, QImage::Format_Grayscale8);
     image.fill(Qt::black);
-
     // Filling
     QRgb color;
     uint height;
     int u;
     int v;
-    float factor = 255 / max_height;
-    for (int index=0; index<n*n; index++){
-        u = index/n;
-        v = index%n;
-        height = vGrid[index][1] * factor;
-        color = qGray(height, height, height);
-        image.setPixel(u, v, color);
+    for (int index=0; index<(n+1)*(n+1); index++){
+        u = index/(n+1);
+        v = index%(n+1);
+        height = vGrid[index][2];
+        color = qRgb(height, height, height);
+        image.setPixelColor(u, v, QColor(color));
     }
-
-    // Writting
-    QImageWriter writer(imagePath);
-    writer.write(image);
+    // Saving image
+    image.save(&file, "PNG");
     std::cout<<"Save success"<<std::endl;
 }
 
@@ -244,17 +243,28 @@ Vector ScalarField::Normalize(Vector p){
     return p * (1.0 / Norm(p));
 }
 
-Vector ScalarField::Clamp(Vector p){
-    // TODO
+Vector ScalarField::Clamp(Vector p, double min, double max){
+    for(int i=0; i<3; i++){
+        if (p[i]>max){p[i] = max;}
+        else if (p[i]<min){p[i] = min;}
+    }
     return p;
 }
 
-double ScalarField::GradientNorm(Vector p) {
-    return Norm(Gradient(p));
+void ScalarField::GradientNorm() {
+    GradField.resize(n*n);
+    for (int index=0; index<n*n; index++){
+        double g = Norm(Gradient(vGrid[index]));
+        GradField[index] = g;
+    }
 }
 
-Vector ScalarField::Laplacian(Vector p) {
-    return Gradient(Gradient(p));
+void ScalarField::Laplacian() {
+    LaplacianField.resize(n*n);
+    for (int index=0; index<n*n; index++){
+        Vector l = Gradient(Gradient(vGrid[index]));
+        LaplacianField[index] = l;
+    }
 }
 
 
@@ -293,12 +303,45 @@ HeightField::HeightField(int set_n, double r){
     Load_Grid();
 }
 
-double HeightField::heightTable[16] = {
-    5.0, 5.0, 5.0, 5.0,
-    3.0, 3.0, 3.0, 3.0,
-    0.0, 0.0, 0.0, 0.0,
-    -1.0, -1.0, -1.0, -1.0
-};
+Vector HeightField::Vertex(int i, int j){
+    // note : idem Grid::Value()
+    return vGrid[Index(i,j)];
+}
+
+Vector HeightField::Normal(int i, int j){
+    return Normalized(Gradient(Vertex(i,j)));
+}
+
+void HeightField::Shade(std::filesystem::path path){
+    //TODO
+
+
+    std::cout<<"Saving shade_field.png ..."<<std::endl;
+    // Initialization
+    QFile file(path);
+    QImage image(n+1, n+1, QImage::Format_Grayscale8);
+    image.fill(Qt::black);
+    // Filling
+    QRgb color;
+    uint height;
+    int u;
+    int v;
+    for (int index=0; index<(n+1)*(n+1); index++){
+        u = index/(n+1);
+        v = index%(n+1);
+        height = vGrid[index][2];
+        color = qRgb(height, height, height);
+        image.setPixelColor(u, v, QColor(color));
+    }
+    // Saving image
+    image.save(&file, "PNG");
+    std::cout<<"Save success"<<std::endl;
+
+}
+
+void HeightField::Export(){
+    //TODO
+}
 
 /*!
 \brief Compute the height for p(x,y)
@@ -362,4 +405,17 @@ Vector HeightField::AverageSlope(int i, int j){
 
     slope /= 8;
     return slope;
+}
+
+
+void HeightField::StreamArea(){
+    //TODO
+}
+
+void HeightField::StreamPower(){
+    //TODO
+}
+
+void HeightField::StreamSlope(){
+    //TODO
 }

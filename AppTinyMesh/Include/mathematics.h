@@ -83,7 +83,7 @@ inline constexpr double Math::RadianToDegree(double a)
 }
 
 // Class
-class Vector
+class   Vector
 {
 protected:
   double c[3]; //!< Components.

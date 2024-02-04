@@ -207,12 +207,8 @@ Mesh::Mesh(const Box2& box)
 {
   // Vertices
   vertices.resize(4);
-
   for (int i = 0; i < 4; i++)
-  {
     vertices[i] = box.Vertex(i);
-  }
-
   // Normals
   normals.push_back(Vector(0, 1, 0));
 
@@ -226,29 +222,30 @@ Mesh::Mesh(const Box2& box)
 
 Mesh::Mesh(const Grid& grid){
     int n = grid.GetN();
+    int n_vertice = (n+1)*(n+1);
+    int n_triangle = n*n*2;
+    int n_square = n*n;
 
     // Vertices
-    int n_vertice = n*n;
     vertices.resize(n_vertice);
-    normals.resize(n_vertice);
 
-    for (int i = 0; i < n_vertice; i++)
-    {
+    for (int i = 0; i < n_vertice; i++){
       vertices[i] = grid.Value(i);
-      normals.push_back(Vector(0.0, -1.0, 0.0));
     }
-
+    //Normals
+    normals.resize(n_square);
     // Reserve space for the triangle array
-    int n_triangle = (n-1)*(n-1)*2;
     varray.reserve(n_triangle * 3);
     narray.reserve(n_triangle * 3);
 
-    int n_square = (n-1)*(n-1);
     int i = 0;
     for (int id=0; id<n_square; id++){
-        if ((id%(n-1) == 0) && (id != 0)){i += 1;}
-        AddTriangle(i, i+1, i+n, id);
-        AddTriangle(i+1, i+n, i+n+1, id);
+        if ((id%(n) == 0) && (id != 0)){i += 1;}
+
+        normals.push_back(Vector(0.0, -1.0, 0.0));
+
+        AddTriangle(i, i+1, i+n+1, id);
+        AddTriangle(i+1, i+n+1, i+n+2, id);
         i++;
     }
 }

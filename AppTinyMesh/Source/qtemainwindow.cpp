@@ -4,6 +4,8 @@
 #include "height-map.h"
 #include "ui_interface.h"
 
+#include <QFileDialog>
+
 MainWindow::MainWindow() : QMainWindow(), uiw(new Ui::Assets)
 {
 	// Chargement de l'interface
@@ -85,9 +87,6 @@ void MainWindow::SphereImplicitExample()
   UpdateGeometry();
 }
 
-/*
-Function building a Box2
-*/
 void MainWindow::Box2Mesh()
 {
     // Test Box2
@@ -105,12 +104,12 @@ void MainWindow::Box2Mesh()
 void MainWindow::GridMesh()
 {
     // Test Grid
-    Mesh gridMesh = Mesh(Grid(5, 2.0));
+    Mesh gridMesh = Mesh(Grid(2, 2.0));
 
     std::vector<Color> cols;
     cols.resize(gridMesh.Vertexes());
     for (size_t i = 0; i < cols.size(); i++)
-        cols[i] = Color(double(i) / 6.0, fmod(double(i) * 39.478378, 1.0), 0.0);
+        cols[i] = Color(0.8, 0.8, 0.8);
 
     meshColor = MeshColor(gridMesh, cols, gridMesh.VertexIndexes());
     UpdateGeometry();
@@ -119,24 +118,25 @@ void MainWindow::GridMesh()
 void MainWindow::ScalarFieldMesh()
 {
     //Test ScalarField
-    //Mesh mesh = Mesh(ScalarField(5, 2.0));
+    ScalarField field = ScalarField(255, 10);
+    QString filename = QFileDialog::getOpenFileName( 0, tr("Open file : "), "../TinyMesh/AppTinyMesh/Data", tr("Images (*.png *.jpg)") );
 
-    //Test Load_Image
-    ScalarField field = ScalarField(256, 10);
-    //Note : lien inacessible ... (erreur de syntaxe ? \ ou /) A CORRIGER
-    field.Load_Image("./AppTinyMesh/Data/Grand_Mountain_HeightMap/HeightMap256.png");
-    field.Save_Image();
+    field.Load_Image(filename);
+    field.Save_Image("../TinyMesh/AppTinyMesh/Data/scalar_field.png");
+    field.GradientNorm();
+    field.Laplacian();
+
     Mesh mesh = Mesh(field);
 
     std::vector<Color> cols;
     cols.resize(mesh.Vertexes());
-    for (size_t i = 0; i < cols.size(); i++)
-        cols[i] = Color(double(i) / 6.0, fmod(double(i) * 39.478378, 1.0), 0.0);
-
+    for (size_t i = 0; i < cols.size(); i++){
+        double c = field.Value(i)[2];
+        cols[i] = Color(c);
+    }
     meshColor = MeshColor(mesh, cols, mesh.VertexIndexes());
     UpdateGeometry();
 }
-
 
 void MainWindow::HeightFieldMesh()
 {
@@ -159,7 +159,6 @@ void MainWindow::UpdateGeometry()
 
     uiw->lineEdit->setText(QString::number(meshColor.Vertexes()));
     uiw->lineEdit_2->setText(QString::number(meshColor.Triangles()));
-
     UpdateMaterial();
 }
 
