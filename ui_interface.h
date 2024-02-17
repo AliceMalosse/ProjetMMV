@@ -22,6 +22,7 @@
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QRadioButton>
+#include <QtWidgets/QSpinBox>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -48,6 +49,15 @@ public:
     QPushButton *gridMesh;
     QPushButton *scalarField;
     QPushButton *heightField;
+    QGroupBox *ObjGroup_Road;
+    QPushButton *addRoad;
+    QPushButton *updateRoad;
+    QSpinBox *spin_StartX;
+    QSpinBox *spin_StartY;
+    QSpinBox *spin_FinishX;
+    QSpinBox *spin_FinishY;
+    QLabel *label_6;
+    QLabel *label_7;
     QWidget *widget_GL;
     QGroupBox *Parameters_groupBox;
     QGroupBox *groupBox_4;
@@ -101,6 +111,11 @@ public:
         sizePolicy.setHeightForWidth(Objects_groupBox->sizePolicy().hasHeightForWidth());
         Objects_groupBox->setSizePolicy(sizePolicy);
         Objects_groupBox->setMinimumSize(QSize(350, 250));
+        ObjGroup_Road = new QGroupBox(Objects_groupBox);
+        ObjGroup_Road->setObjectName(QString::fromUtf8("ObjGroup_Road"));
+        ObjGroup_Road->setEnabled(true);
+        ObjGroup_Road->setSizePolicy(sizePolicy);
+        ObjGroup_Road->setMinimumSize(QSize(350, 250));
         boxMesh = new QPushButton(Objects_groupBox);
         boxMesh->setObjectName(QString::fromUtf8("boxMesh"));
         boxMesh->setGeometry(QRect(20, 20, 101, 23));
@@ -131,6 +146,32 @@ public:
         heightField->setObjectName(QString::fromUtf8("heightField"));
         heightField->setGeometry(QRect(20, 170, 101, 23));
         heightField->setCheckable(false);
+        addRoad = new QPushButton(ObjGroup_Road);
+        addRoad->setObjectName(QString::fromUtf8("addRoad"));
+        addRoad->setGeometry(QRect(20, 250, 101, 23));
+        addRoad->setCheckable(false);
+        updateRoad = new QPushButton(ObjGroup_Road);
+        updateRoad->setObjectName(QString::fromUtf8("updateRoad"));
+        updateRoad->setGeometry(QRect(150, 250, 101, 23));
+        updateRoad->setCheckable(false);
+        spin_StartX = new QSpinBox(ObjGroup_Road);
+        spin_StartX->setObjectName(QString::fromUtf8("spin_StartX"));
+        spin_StartX->setGeometry(QRect(60, 280, 40, 23));
+        spin_StartY = new QSpinBox(ObjGroup_Road);
+        spin_StartY->setObjectName(QString::fromUtf8("spin_StartY"));
+        spin_StartY->setGeometry(QRect(110, 280, 40, 23));
+        spin_FinishX = new QSpinBox(ObjGroup_Road);
+        spin_FinishX->setObjectName(QString::fromUtf8("spin_FinishX"));
+        spin_FinishX->setGeometry(QRect(60, 310, 40, 23));
+        spin_FinishY = new QSpinBox(ObjGroup_Road);
+        spin_FinishY->setObjectName(QString::fromUtf8("spin_FinishX"));
+        spin_FinishY->setGeometry(QRect(110, 310, 40, 23));
+        label_6 = new QLabel(ObjGroup_Road);
+        label_6->setObjectName(QString::fromUtf8("label_6"));
+        label_6->setGeometry(QRect(20, 280, 61, 21));
+        label_7 = new QLabel(ObjGroup_Road);
+        label_7->setObjectName(QString::fromUtf8("label_7"));
+        label_7->setGeometry(QRect(20, 310, 61, 21));
 
         hboxLayout->addWidget(Objects_groupBox);
 
@@ -216,6 +257,7 @@ public:
         actionExport_svg->setText(QCoreApplication::translate("Assets", "SVG File (.svg)", nullptr));
         actionSphere_Tracing_png->setText(QCoreApplication::translate("Assets", "Sphere Tracing (.png)", nullptr));
         Objects_groupBox->setTitle(QString());
+        ObjGroup_Road->setTitle(QString());
 #if QT_CONFIG(tooltip)
         boxMesh->setToolTip(QCoreApplication::translate("Assets", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
@@ -274,6 +316,26 @@ public:
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#aa00ff;\">Create Eurographics 1996 Bear</span></p></body></html>", nullptr));
 #endif // QT_CONFIG(tooltip)
         heightField->setText(QCoreApplication::translate("Assets", "Height Field", nullptr));
+#if QT_CONFIG(tooltip)
+        addRoad->setToolTip(QCoreApplication::translate("Assets", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#5500ff;\">Callback #01</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#aa00ff;\">Create Eurographics 1996 Bear</span></p></body></html>", nullptr));
+#endif // QT_CONFIG(tooltip)
+        addRoad->setText(QCoreApplication::translate("Assets", "Add Road", nullptr));
+#if QT_CONFIG(tooltip)
+        updateRoad->setToolTip(QCoreApplication::translate("Assets", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#5500ff;\">Callback #01</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic; color:#aa00ff;\">Create Eurographics 1996 Bear</span></p></body></html>", nullptr));
+#endif // QT_CONFIG(tooltip)
+        updateRoad->setText(QCoreApplication::translate("Assets", "Update Road", nullptr));
+        label_6->setText(QCoreApplication::translate("Assets", "Start", nullptr));
+        label_7->setText(QCoreApplication::translate("Assets", "Finish", nullptr));
         Parameters_groupBox->setTitle(QString());
         groupBox_4->setTitle(QCoreApplication::translate("Assets", " Statistics", nullptr));
         label_2->setText(QCoreApplication::translate("Assets", "Vertex", nullptr));

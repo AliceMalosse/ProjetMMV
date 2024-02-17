@@ -193,6 +193,162 @@ p, li { white-space: pre-wrap; }
          <string>Height Field</string>
         </property>
        </widget>
+       <widget class="QGroupBox" name="ObjGroup_Road">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>-20</x>
+          <y>270</y>
+          <width>350</width>
+          <height>250</height>
+         </rect>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>350</width>
+          <height>250</height>
+         </size>
+        </property>
+        <property name="title">
+         <string/>
+        </property>
+        <widget class="QPushButton" name="addRoad">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>20</y>
+           <width>101</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Add Road</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_6">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>60</y>
+           <width>61</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Start</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_7">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>100</y>
+           <width>61</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Finish</string>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="spin_StartX">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>90</x>
+           <y>60</y>
+           <width>48</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="maximum">
+          <number>255</number>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="spin_StartY">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>150</x>
+           <y>60</y>
+           <width>48</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="maximum">
+          <number>255</number>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="spin_FinishY">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>150</x>
+           <y>100</y>
+           <width>48</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="maximum">
+          <number>255</number>
+         </property>
+         <property name="value">
+          <number>5</number>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="spin_FinishX">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>90</x>
+           <y>100</y>
+           <width>48</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="maximum">
+          <number>255</number>
+         </property>
+         <property name="value">
+          <number>5</number>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="updateRoad">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>230</x>
+           <y>20</y>
+           <width>101</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Update</string>
+         </property>
+        </widget>
+       </widget>
       </widget>
      </widget>
     </item>

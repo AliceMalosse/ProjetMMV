@@ -313,19 +313,18 @@ Vector HeightField::Normal(int i, int j){
 }
 
 void HeightField::Shade(std::filesystem::path path){
-    //TODO
-
-
     std::cout<<"Saving shade_field.png ..."<<std::endl;
     // Initialization
     QFile file(path);
     QImage image(n+1, n+1, QImage::Format_Grayscale8);
     image.fill(Qt::black);
-    // Filling
     QRgb color;
     uint height;
     int u;
     int v;
+    // Calculate color
+
+    // Filling
     for (int index=0; index<(n+1)*(n+1); index++){
         u = index/(n+1);
         v = index%(n+1);
