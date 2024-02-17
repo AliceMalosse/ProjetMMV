@@ -34,7 +34,7 @@ public:
     Vector Gradient(Vector);
     double Value(Vector);
 
-    void FindPath();
+    void FindPath(ScalarField, std::vector<double>, std::vector<bool>);
     void Dijkstra(ScalarField);
 
     double Weigth(Vector, Vector);

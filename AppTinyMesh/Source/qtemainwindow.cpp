@@ -195,14 +195,12 @@ void MainWindow::AddRoadMesh(){
     meshColor2 = MeshColor(pointMesh, cols, pointMesh.VertexIndexes());
     UpdateGeometry(false, "finishSphereMesh", meshColor2);
 
-    //if(start != finish){
+    if(start != finish){
         //calculate path
-        //Road road(start, finish);
-        //road.Dijkstra(field);
-
+        Road road(start, finish);
+        road.Dijkstra(field);
         //build road mesh - add mesh constructor
-
-    //}
+    }
 
 
 }
