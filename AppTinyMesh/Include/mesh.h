@@ -2,6 +2,7 @@
 
 #include "box.h"
 #include "height-map.h"
+#include "road.h"
 #include "ray.h"
 #include "mathematics.h"
 
@@ -125,6 +126,7 @@ public:
   explicit Mesh(const Grid&);
   explicit Mesh(const ScalarField&);
   explicit Mesh(const HeightField&);
+  explicit Mesh(const Road&);
 
   void Load(const QString&);
   void SaveObj(const QString&, const QString&) const;

@@ -309,6 +309,28 @@ Mesh::Mesh(const HeightField& field){
     }
 }
 
+Mesh::Mesh(const Road& road){
+    // Vertices
+    std::vector<Vector> path = road.Path();
+    int size = path.size();
+    vertices.resize(2*size);
+    for (int i = 0; i < size; i++){
+        vertices[2*i] = path[i];
+        vertices[2*i+1] = path[i] + road.Width()*Vector(1.0,0.0,0.0) + 0.01*Vector(0.0,0.0,1.0);
+    }
+    // Normals
+    normals.push_back(Vector(0, 1, 0));
+
+    // Reserve space for the triangle array
+    varray.reserve((size-1) * 2 * 3);
+    narray.reserve((size-1) * 2 * 3);
+
+    for (int i=0; i<size-1; i++){
+        AddTriangle(2*i, 2*i+1, 2*i+2, 0);
+        AddTriangle(2*i+1, 2*i+2, 2*i+3, 0);
+    }
+}
+
 /*!
 \brief Scale the mesh.
 \param s Scaling factor.

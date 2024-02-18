@@ -10,6 +10,15 @@ Road::Road(){
 Road::Road(int id_a, int id_b){
     id_start = id_a;
     id_finish = id_b;
+    width = 0.1;
+    path = {};
+}
+
+Road::Road(int id_a, int id_b, double w){
+    id_start = id_a;
+    id_finish = id_b;
+    width = w;
+    path = {};
 }
 
 // Setter
@@ -21,13 +30,25 @@ void Road::SetFinish(int b){
     id_finish = b;
 }
 
+void Road::SetWidth(double w){
+    width = w;
+}
+
 // Getter
-int Road::Start(){
+int Road::Start() const {
     return id_start;
 }
 
-int Road::Finish(){
+int Road::Finish() const {
     return id_finish;
+}
+
+double Road::Width() const {
+    return width;
+}
+
+std::vector<Vector> Road::Path() const {
+    return path;
 }
 
 // Return the index of the neighboors using M2 neighbooring
@@ -96,7 +117,7 @@ double Road::Value(Vector p)
   return Norm(p) - 1.0;
 }
 
-double Road::factor = 1.0;
+double Road::factor = 0.5;
 
 // Calculate a path between start and finish using Dijkstra
 void Road::FindPath(ScalarField field, std::vector<double> distGrid, std::vector<bool> exploreGrid){
@@ -109,8 +130,9 @@ void Road::FindPath(ScalarField field, std::vector<double> distGrid, std::vector
             if ((c<min || min==-1) && exploreGrid[c]){min = c;}
         }
         ind = min;
-        path.insert(path.begin()+1, field.Value(ind));
+        path.insert(path.begin(), field.Value(ind));
     }
+    //for(Vector p : path){std::cout<<p<<std::endl;}
 }
 
 // Execute the Dijktra algorithme to get the weight of the point between strat and finish point
@@ -134,8 +156,8 @@ void Road::Dijkstra(ScalarField field){
         std::vector<int> connectivity = GetConnection(ind, n);
         for(int i=0; i<connectivity.size(); i++){
             int tmp_ind = connectivity[i];
-            double weigth = Weigth(field.Value(tmp_ind), field.Value(id_finish));
-            if(!exploreGrid[tmp_ind] && distGrid[ind]!=INT_MAX && weigth<distGrid[tmp_ind]){
+            double weigth = Weigth(field.Value(tmp_ind), field.Value(id_start), field.Value(id_finish));
+            if(!exploreGrid[tmp_ind] && distGrid[ind]!=INT_MAX && (distGrid[ind] + weigth)<distGrid[tmp_ind]){
                 distGrid[tmp_ind] = distGrid[ind] + weigth;
             }
         }
@@ -146,8 +168,9 @@ void Road::Dijkstra(ScalarField field){
 
 // Return the weigth of a vector p
     // using his slope and distance from the finish point
-double Road::Weigth(Vector p, Vector f){
-    return factor*Norm(Slope(p)) + (1-factor) * Norm(f-p);
+double Road::Weigth(Vector p, Vector s, Vector f){
+    double max_dist = Norm(f-s);
+    return factor*max_dist*Norm(Slope(p)) + (1-factor) * Norm(f-p);
 }
 
 // Return the minimal weigth in the whole weigthed matrix named distGrid
@@ -163,31 +186,4 @@ int Road::MinimumWeigth(std::vector<double> distGrid, std::vector<bool> exploreG
     }
     return ind;
 }
-
-
-
-// Define the vector of M2 / Not used
-std::vector<Vector> Road::connection = {Vector(0, 1, 0),
-                                        Vector(1, 2, 0),
-                                        Vector(1, 1, 0),
-                                        Vector(2, 1, 0),
-                                        Vector(1, 0, 0),
-                                        Vector(2, -1, 0),
-                                        Vector(1, -1, 0),
-                                        Vector(1, -2, 0),
-                                        Vector(0, -1, 0),
-                                        Vector(-1, -2, 0),
-                                        Vector(-1, -1, 0),
-                                        Vector(-2, -1, 0),
-                                        Vector(-1, 0, 0),
-                                        Vector(-2, 1, 0),
-                                        Vector(-1, 1, 0),
-                                        Vector(-1, 2, 0)};
-
-// Define distance between origin and the neigboor / Not used
-std::vector<double> Road::dist = {1.0, sqrt(5), sqrt(2), sqrt(5),
-                                  1.0, sqrt(5), sqrt(2), sqrt(5),
-                                  1.0, sqrt(5), sqrt(2), sqrt(5),
-                                  1.0, sqrt(5), sqrt(2), sqrt(5)};
-
 

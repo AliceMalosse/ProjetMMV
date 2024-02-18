@@ -200,6 +200,12 @@ void MainWindow::AddRoadMesh(){
         Road road(start, finish);
         road.Dijkstra(field);
         //build road mesh - add mesh constructor
+        Mesh mesh = Mesh(road);
+        cols.resize(mesh.Vertexes());
+        for (size_t i = 0; i < cols.size(); i++)
+          cols[i] = Color(1.0, 0.0, 0.0, 1.0);
+        RoadMesh = MeshColor(mesh, cols, mesh.VertexIndexes());
+        UpdateGeometry(false, "roadMesh", RoadMesh);
     }
 
 
